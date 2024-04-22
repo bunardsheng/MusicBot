@@ -1,5 +1,5 @@
-import requests
-from requests_oauthlib import OAuth1
+# import requests
+# from requests_oauthlib import OAuth1
 import os
 import random
 from random import shuffle
@@ -31,19 +31,19 @@ def get_tweets():
     return tweets
 
 def random_song():
-    trending = requests.get("https://openlibrary.org/trending/daily.json").json()
+    # trending = requests.get("https://openlibrary.org/trending/daily.json").json()
     songs = get_songs()
-    index = songs[random.randint(0, len(songs))]
-    return songs[index]
+    song = songs[random.randint(0, len(songs))]
+    return song
 
 def format_song(song, comments):
    shuffle(comments)
-   return {"text": "{tweet}{title}".format(tweet = song, title = [0])}
+   return {"text": "{title}{tweet}".format(tweet = song, title = comments[random.randint(0, len(comments) - 1)])}
 
 
 def connect_to_oauth(consumer_key, consumer_secret, acccess_token, access_token_secret):
    url = "https://api.twitter.com/2/tweets"
-   auth = OAuth1(consumer_key, consumer_secret, acccess_token, access_token_secret)
+#    auth = OAuth1(consumer_key, consumer_secret, acccess_token, access_token_secret)
    return url, auth
 
 def hello_pubsub(event, context):
@@ -54,7 +54,15 @@ def hello_pubsub(event, context):
    url, auth = connect_to_oauth(
        consumer_key, consumer_secret, access_token, access_token_secret
    )
-   request = requests.post(
-       auth=auth, url=url, json=payload, headers={"Content-Type": "application/json"}
-   )
+#    request = requests.post(
+#     #    auth=auth, url=url, json=payload, headers={"Content-Type": "application/json"}
+#    )
 
+
+def run():
+    song = random_song()
+    tweets = get_tweets()
+    payload = format_song(song, tweets)
+    print(payload)
+
+run()
