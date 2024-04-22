@@ -9,32 +9,36 @@ consumer_secret = os.environ.get("Consumer_Secret")
 access_token = os.environ.get("Access_Token")
 access_token_secret = os.environ.get("Access_Token_Secret")
 
+def get_songs():
+    songs = [
+        "Sibelius Violin Concerto",
+        "Tchaikovsky Violin Concerto",
+        "Bach Chaconne",
+        "Brahms Sonata No. 1",
+        "Waxman Carmen Fantasie",
+        "Symphony No. 5 in E Minor"
+    ]
+    return songs
+
 def get_tweets():
     tweets = [
-    "What should I read today? How about ",
+    "What should I listen to today? How about ",
     "I'm bored, maybe I'll pick up ",
-    "Check this out! " 
+    "Check this out! ",
+    "I feel like listening to: ",
+    "What's up y'all! I love music, today I'm listening to: ",
     ]   
     return tweets
 
-def random_book():
+def random_song():
     trending = requests.get("https://openlibrary.org/trending/daily.json").json()
-    books = trending["works"]
-    book_title_auth = []
+    songs = get_songs()
+    index = songs[random.randint(0, len(songs))]
+    return songs[index]
 
-    for book in books:
-        author = book.get("author_name", [None])[0]
-        if not author: author = "oops there's no author"
-        book_title_auth.append([book["title"], author])
-    
-    length = len(book_title_auth) - 1
-    num = random.randint(0, length)
-
-    return book_title_auth[num]
-
-def format_book(book, comments):
+def format_song(song, comments):
    shuffle(comments)
-   return {"text": "{tweet}{title} by {author}".format(tweet = comments[0], title = book[0], author = book[1])}
+   return {"text": "{tweet}{title}".format(tweet = song, title = [0])}
 
 
 def connect_to_oauth(consumer_key, consumer_secret, acccess_token, access_token_secret):
@@ -43,9 +47,9 @@ def connect_to_oauth(consumer_key, consumer_secret, acccess_token, access_token_
    return url, auth
 
 def hello_pubsub(event, context):
-   book = random_book()
+   song = random_song()
    tweets = get_tweets()
-   payload = format_book(book, tweets)
+   payload = format_song(song, tweets)
    
    url, auth = connect_to_oauth(
        consumer_key, consumer_secret, access_token, access_token_secret
