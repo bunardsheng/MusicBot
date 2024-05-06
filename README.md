@@ -1,2 +1,2 @@
-# TwitterBookBot
-A Twitter book bot that gives you something to read-- everyday.
+# TwitterMusicBot
+A Twitter music bot that gives you something to listen to-- everyday.
